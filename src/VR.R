@@ -61,7 +61,7 @@ ui <- fluidPage(
       # Add a link to download the PDF file
       downloadLink("dataDescriptionLink", "Download Data Description"),
       br(),
-      downloadLink("dataDownloadLink", "Download Data (CSV)")
+      downloadLink("mockDataDownloadLink", "Download Data (CSV)")
     ),
 
     mainPanel(
@@ -90,90 +90,37 @@ server <- function(input, output) {
     }
   })
 
-  # Render the uploaded file in a data table
-  output$outFile <- renderDataTable({
-    data.frame(inFile())
-  })
+    # Render the uploaded file in a data table
+    output$outFile <- renderDataTable({
+        data.frame(inFile())
+    })
 
-  # Animate data table when all rows are selected
-  observeEvent(input$outFile_rows_all, {
-    shinyjs::animate("outFile", animation = "fadeIn")
-  })
+    # Animate data table when all rows are selected
+    observeEvent(input$outFile_rows_all, {
+        shinyjs::animate("outFile", animation = "fadeIn")
+    })
 
-  # Render summary statistics
-  output$statistics <- renderPrint({
+    # Time vs. Distance Correlation for Each Piece
+    output$statistics <- renderPlot({
     data <- inFile()
     if (!is.null(data)) {
-      summary(data)
     }
-  })
+    })
 
-  # Render the histogram of shares vs. day published
-  output$histograms <- renderPlot({
+
+    # Average Time and Distance by Piece
+    output$statistics <- renderPlot({
     data <- inFile()
     if (!is.null(data)) {
-      day_columns <- c("weekday_is_monday", "weekday_is_tuesday", "weekday_is_wednesday",
-                       "weekday_is_thursday", "weekday_is_friday", "weekday_is_saturday", "weekday_is_sunday")
-
-      day_names <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-      shares_by_day <- sapply(data[, day_columns], function(col) {
-        sum(data$shares * col)
-      })
-      mean_shares_by_day <- sapply(data[, day_columns], function(col) {
-        mean(data$shares * col)
-      })
-
-      day_shares <- data.frame(Day = day_names, Mean_Shares = mean_shares_by_day)
-
-      ggplot(day_shares, aes(x = Day, y = Mean_Shares, fill = Day)) +
-        geom_bar(stat = "identity") +
-        labs(title = "Histogram of Mean Shares per Day of the Week", x = "Day of the Week", y = "Mean Shares") +
-        theme_minimal() +
-        theme(plot.title = element_text(hjust = 0.5))
     }
-  })
+    })
 
-  # Render the categorical heatmap of shares vs. topic
-  output$categoricalHeatmap <- renderPlot({
+    # Player Movement Heatmap
+    output$statistics <- renderPlot({
     data <- inFile()
     if (!is.null(data)) {
-      subset_data <- data[, c(
-        "data_channel_is_lifestyle",
-        "data_channel_is_entertainment",
-        "data_channel_is_bus",
-        "data_channel_is_socmed",
-        "data_channel_is_tech",
-        "data_channel_is_world",
-        "shares" # Target variable
-      )]
-
-      correlation_matrix <- cor(subset_data, method = "pearson")
-
-      colnames(correlation_matrix) <- c(
-        "Lifestyle",
-        "Entertainment",
-        "Business",
-        "Social Media",
-        "Tech",
-        "World",
-        "Shares" # Target variable
-      )
-
-      rownames(correlation_matrix) <- colnames(correlation_matrix)
-
-      par(mar = c(1, 1, 1, 1))
-      corrplot(
-        correlation_matrix,
-        method = "color",
-        type = "upper",
-        tl.col = "black",
-        tl.cex = 0.7,
-        tl.srt = 45,
-        addrect = 6,
-        is.corr = FALSE # Show legend
-      )
     }
-  })
+    })
 
 
   # Define download link for data description PDF
@@ -182,7 +129,7 @@ server <- function(input, output) {
       "dataDescription.pdf"
     },
     content = function(file) {
-      file.copy("../finalSubmission/dataDescription.pdf", file)
+      file.copy("dataDescription.pdf", file)
     }
   )
 
@@ -192,7 +139,7 @@ server <- function(input, output) {
     "data.csv"
     },
     content = function(file) {
-      file.copy("../finalSubmission/OnlineNewsPopularity.csv", file)
+      file.copy("mockData.csv", file)
     }
   )
 }
