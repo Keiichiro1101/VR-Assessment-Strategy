@@ -1,5 +1,3 @@
-![Sample Screenshot](src/screenshot.png)
-
 ## Installation
 
 Before running the application, make sure you have the required R packages installed. You can do this by running the following commands in R or RStudio:
