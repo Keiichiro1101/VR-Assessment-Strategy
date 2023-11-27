@@ -3,6 +3,8 @@ library(shinyjs)
 library(shiny)
 library(ggplot2)
 library(corrplot)
+library(reshape2)
+library(dplyr)
 
 # Set Shiny option for maximum request size
 options(shiny.maxRequestSize = 100 * 1024^2)
@@ -50,6 +52,8 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       style = "background-color: #000000; color: #aa66cc;",  # Set background color to black and text color to purple
+      # Instructional text for users
+      HTML('<p style="color: #aa66cc;">Please ensure to review the data description before uploading a CSV file. Make sure that the dataset you upload matches the data description in order for the app to work correctly.</p>'),
       fileInput("file",
                 label = "Upload your dataset (CSV)",
                 accept = c("text/csv"),
@@ -60,14 +64,14 @@ ui <- fluidPage(
       br(),
       downloadLink("vikingshipDataLink", "Download Data (CSV)", class = "download-link"),
     ),
-
+    
     mainPanel(
       style = "background-color: #000000; color: #aa66cc;",
       tabsetPanel(type = "tabs",
                   tabPanel("Data", dataTableOutput("outFile")),
-                  tabPanel("Time vs. Distance Correlation for Each Piece", h1("Time vs. Distance Correlation for Each Piece", style = "color: #aa66cc;"), verbatimTextOutput("statistics")),
-                  tabPanel("Average Time and Distance by Piece", h1("Average Time and Distance by Piece", style = "color: #aa66cc;"), plotOutput("histograms")),
-                  tabPanel("Player Movement Heatmap", h1("Player Movement Heatmap", style = "color: #aa66cc;"), plotOutput("interestingPlot")),
+                  tabPanel("Completion Time Analysis", plotOutput("completionTimePlot")),
+                  tabPanel("Distance Analysis", plotOutput("distancePlot")),
+                  tabPanel("Video Engagement Analysis", plotOutput("videoEngagementPlot"))
       )
     )
   )
@@ -92,30 +96,35 @@ server <- function(input, output, session) {
     data.frame(inFile())
   })
 
-  # Time vs. Distance Correlation for Each Piece
-  output$statistics <- renderPlot({
-    data <- inFile()
-    if (!is.null(data)) {
-      # Add your plot logic here
-    }
+  # Plot for Completion Time Analysis
+  output$completionTimePlot <- renderPlot({
+    req(inFile())
+    ggplot(inFile(), aes(x = piece, y = completion_time)) +
+      geom_bar(stat = "summary", fun = "mean", fill = "#aa66cc") +
+      theme_minimal() +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+      labs(title = "Average Completion Time per Piece", x = "Piece", y = "Average Completion Time")
   })
-
-  # Average Time and Distance by Piece
-  output$statistics <- renderPlot({
-    data <- inFile()
-    if (!is.null(data)) {
-      # Add your plot logic here
-    }
+  
+  # Plot for Distance Analysis
+  output$distancePlot <- renderPlot({
+    req(inFile())
+    ggplot(inFile(), aes(x = distance, y = completion_time, color = piece)) +
+      geom_point() +
+      theme_minimal() +
+      labs(title = "Distance vs Completion Time", x = "Distance", y = "Completion Time")
   })
-
-  # Player Movement Heatmap
-  output$statistics <- renderPlot({
-    data <- inFile()
-    if (!is.null(data)) {
-      # Add your plot logic here
-    }
+  
+  # Plot for Video Engagement Analysis
+  output$videoEngagementPlot <- renderPlot({
+    req(inFile())
+    ggplot(inFile(), aes(x = piece, y = percentage_video)) +
+      geom_bar(stat = "summary", fun = "mean", fill = "#aa66cc") +
+      theme_minimal() +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+      labs(title = "Average Percentage of Video Watched per Piece", x = "Piece", y = "Average Percentage Watched")
   })
-
+  
   # Define download link for data description PDF
   output$dataDescriptionLink <- downloadHandler(
     filename = function() {
