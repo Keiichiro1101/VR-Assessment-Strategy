@@ -58,7 +58,7 @@ ui <- fluidPage(
       # Add a link to download the PDF file
       downloadLink("dataDescriptionLink", "Download Data Description", class = "download-link"),
       br(),
-      downloadLink("mockDataDownloadLink", "Download Data (CSV)", class = "download-link")
+      downloadLink("vikingshipDataLink", "Download Data (CSV)", class = "download-link"),
     ),
 
     mainPanel(
@@ -127,12 +127,12 @@ server <- function(input, output, session) {
   )
 
   # Define download link for the dataset in CSV format
-  output$dataDownloadLink <- downloadHandler(
+  output$vikingshipDataLink <- downloadHandler(
     filename = function() {
       "vikingshipData.csv"
     },
     content = function(file) {
-      file.copy("./mockData/vikingshipData.csv", file)
+      file.copy("vikingshipData.csv", file)
     }
   )
 }
