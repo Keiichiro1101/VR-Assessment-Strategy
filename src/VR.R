@@ -68,10 +68,10 @@ ui <- fluidPage(
     mainPanel(
       style = "background-color: #000000; color: #aa66cc;",
       tabsetPanel(type = "tabs",
-                  tabPanel("Data", dataTableOutput("outFile")),
-                  tabPanel("Completion Time Analysis", plotOutput("completionTimePlot")),
-                  tabPanel("Distance Analysis", plotOutput("distancePlot")),
-                  tabPanel("Video Engagement Analysis", plotOutput("videoEngagementPlot"))
+                  tabPanel("Data", h1("Data", style = "color: aa66cc;"),dataTableOutput("outFile")),
+                  tabPanel("Average Completion Time per Piece", h1("Completion Time Analysis", style = "color: aa66cc;"), plotOutput("completionTimePlot")),
+                  tabPanel("Distance Analysis", h1("Distance vs Completion Time", style = "color: aa66cc;"), plotOutput("distancePlot")),
+                  tabPanel("Video Engagement Analysis", h1("Average Percentage of Video Watched per Piece", style = "color: aa66cc;"), plotOutput("videoEngagementPlot"))
       )
     )
   )
@@ -103,7 +103,7 @@ server <- function(input, output, session) {
       geom_bar(stat = "summary", fun = "mean", fill = "#aa66cc") +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-      labs(title = "Average Completion Time per Piece", x = "Piece", y = "Average Completion Time")
+      labs(x = "Piece", y = "Average Completion Time")
   })
   
   # Plot for Distance Analysis
@@ -112,7 +112,7 @@ server <- function(input, output, session) {
     ggplot(inFile(), aes(x = distance, y = completion_time, color = piece)) +
       geom_point() +
       theme_minimal() +
-      labs(title = "Distance vs Completion Time", x = "Distance", y = "Completion Time")
+      labs(x = "Distance", y = "Completion Time")
   })
   
   # Plot for Video Engagement Analysis
@@ -122,7 +122,7 @@ server <- function(input, output, session) {
       geom_bar(stat = "summary", fun = "mean", fill = "#aa66cc") +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-      labs(title = "Average Percentage of Video Watched per Piece", x = "Piece", y = "Average Percentage Watched")
+      labs(x = "Piece", y = "Average Percentage Watched")
   })
   
   # Define download link for data description PDF
