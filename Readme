@@ -7,6 +7,8 @@ install.packages("shiny")
 install.packages("ggplot2")
 install.packages("shinyjs")
 install.packages("corrplot")
+install.packages("dplyr")
+install.packages("reshape2")
 ```
 
 ## Running the Application
