@@ -129,10 +129,10 @@ server <- function(input, output, session) {
   # Define download link for the dataset in CSV format
   output$dataDownloadLink <- downloadHandler(
     filename = function() {
-      "data.csv"
+      "vikingshipData.csv"
     },
     content = function(file) {
-      file.copy("mockData.csv", file)
+      file.copy("./mockData/vikingshipData.csv", file)
     }
   )
 }
