@@ -13,20 +13,6 @@ options(shiny.maxRequestSize = 100 * 1024^2)
 ui <- fluidPage(
   tags$head(
     tags$style(HTML('
-        body {
-          background-color: #000000; /* Black background */
-          color: #aa66cc;
-        }
-        .navbar {
-          background-color: #aa66cc;
-        }
-        .nav-tabs > li > a {
-          background-color: #aa66cc;
-          color: #ffffff; /* White text color for tabs */
-        }
-        .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
-          background-color: #ffffff; /* White background for active tab */
-          color: #aa66cc;
         }
         .animated-title {
           animation: fadeIn 1s; /* Use fadeIn animation for 1 second */
@@ -39,10 +25,6 @@ ui <- fluidPage(
             opacity: 1;
           }
         }
-        .download-link {
-          color: #aa66cc !important; /* Make the download links purple */
-          text-decoration: underline; /* Add underline to the download links */
-        }
       '))
   ),
   titlePanel(
@@ -51,7 +33,6 @@ ui <- fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      style = "background-color: #000000; color: #aa66cc;",  # Set background color to black and text color to purple
       # Instructional text for users
       HTML('<p style="color: #aa66cc;">Please ensure to review the data description before uploading a CSV file. Make sure that the dataset you upload matches the data description in order for the app to work correctly.</p>'),
       fileInput("file",
@@ -66,7 +47,6 @@ ui <- fluidPage(
     ),
     
     mainPanel(
-      style = "background-color: #000000; color: #aa66cc;",
       tabsetPanel(type = "tabs",
                   tabPanel("Data", h1("Data", style = "color: aa66cc;"),dataTableOutput("outFile")),
                   tabPanel("Average Completion Time per Piece", h1("Completion Time Analysis", style = "color: aa66cc;"), plotOutput("completionTimePlot")),
@@ -148,3 +128,4 @@ server <- function(input, output, session) {
 
 # Launch the Shiny app
 shinyApp(ui, server)
+
