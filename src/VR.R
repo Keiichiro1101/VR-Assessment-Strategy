@@ -11,23 +11,9 @@ options(shiny.maxRequestSize = 100 * 1024^2)
 
 # Define the user interface (UI)
 ui <- fluidPage(
+  shinythemes::themeSelector(),
   tags$head(
     tags$style(HTML('
-        body {
-          background-color: #000000; /* Black background */
-          color: #aa66cc;
-        }
-        .navbar {
-          background-color: #aa66cc;
-        }
-        .nav-tabs > li > a {
-          background-color: #aa66cc;
-          color: #ffffff; /* White text color for tabs */
-        }
-        .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
-          background-color: #ffffff; /* White background for active tab */
-          color: #aa66cc;
-        }
         .animated-title {
           animation: fadeIn 1s; /* Use fadeIn animation for 1 second */
         }
@@ -37,7 +23,6 @@ ui <- fluidPage(
           }
           to {
             opacity: 1;
-          }
         }
         .download-link {
           color: #aa66cc !important; /* Make the download links purple */
@@ -46,14 +31,12 @@ ui <- fluidPage(
       '))
   ),
   titlePanel(
-    h1("GCIEL Assessment Strategy", style = "color: #aa66cc; font-size: 60px;", class = "animated-title")
+    h1("GCIEL Assessment Strategy",  class = "animated-title")
   ),
-
   sidebarLayout(
     sidebarPanel(
-      style = "background-color: #000000; color: #aa66cc;",  # Set background color to black and text color to purple
       # Instructional text for users
-      HTML('<p style="color: #aa66cc;">Please ensure to review the data description before uploading a CSV file. Make sure that the dataset you upload matches the data description in order for the app to work correctly.</p>'),
+      HTML('<p style="">Please ensure to review the data description before uploading a CSV file. Make sure that the dataset you upload matches the data description in order for the app to work correctly.</p>'),
       fileInput("file",
                 label = "Upload your dataset (CSV)",
                 accept = c("text/csv"),
@@ -66,12 +49,12 @@ ui <- fluidPage(
     ),
     
     mainPanel(
-      style = "background-color: #000000; color: #aa66cc;",
+      style = "",
       tabsetPanel(type = "tabs",
-                  tabPanel("Data", h1("Data", style = "color: aa66cc;"),dataTableOutput("outFile")),
-                  tabPanel("Average Completion Time per Piece", h1("Completion Time Analysis", style = "color: aa66cc;"), plotOutput("completionTimePlot")),
-                  tabPanel("Distance Analysis", h1("Distance vs Completion Time", style = "color: aa66cc;"), plotOutput("distancePlot")),
-                  tabPanel("Video Engagement Analysis", h1("Average Percentage of Video Watched per Piece", style = "color: aa66cc;"), plotOutput("videoEngagementPlot"))
+                  tabPanel("Data", h1("Data", style = ""),dataTableOutput("outFile")),
+                  tabPanel("Average Completion Time per Piece", h1("Completion Time Analysis", style = ""), plotOutput("completionTimePlot")),
+                  tabPanel("Distance Analysis", h1("Distance vs Completion Time", style = ""), plotOutput("distancePlot")),
+                  tabPanel("Video Engagement Analysis", h1("Average Percentage of Video Watched per Piece", style = ""), plotOutput("videoEngagementPlot"))
       )
     )
   )
@@ -79,7 +62,7 @@ ui <- fluidPage(
 
 # Define the server logic
 server <- function(input, output, session) {
-
+  
   # Reactive expression for uploaded file
   inFile <- reactive({
     tmp <- input$file
@@ -90,14 +73,14 @@ server <- function(input, output, session) {
       return(df)
     }
   })
-
+  
   # Render the uploaded file in a data table
   output$outFile <- renderDataTable({
     data.frame(inFile())
   })
-
+  
   # Plot for Completion Time Analysis
-  output$completionTimePlot <- renderPlot({
+  output$completionTimePlot <- renderPlot({r
     req(inFile())
     ggplot(inFile(), aes(x = piece, y = completion_time)) +
       geom_bar(stat = "summary", fun = "mean", fill = "#aa66cc") +
@@ -134,7 +117,7 @@ server <- function(input, output, session) {
       file.copy("dataDescription.pdf", file)
     }
   )
-
+  
   # Define download link for the dataset in CSV format
   output$vikingshipDataLink <- downloadHandler(
     filename = function() {
@@ -148,3 +131,4 @@ server <- function(input, output, session) {
 
 # Launch the Shiny app
 shinyApp(ui, server)
+
