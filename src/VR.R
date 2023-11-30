@@ -5,6 +5,8 @@ library(ggplot2)
 library(corrplot)
 library(reshape2)
 library(dplyr)
+library(plotly)
+library(stringr)
 
 # Set Shiny option for maximum request size
 options(shiny.maxRequestSize = 100 * 1024^2)
@@ -48,10 +50,21 @@ ui <- fluidPage(
     
     mainPanel(
       tabsetPanel(type = "tabs",
-                  tabPanel("Data", h1("Data", style = "color: aa66cc;"),dataTableOutput("outFile")),
-                  tabPanel("Average Completion Time per Piece", h1("Completion Time Analysis", style = "color: aa66cc;"), plotOutput("completionTimePlot")),
-                  tabPanel("Distance Analysis", h1("Distance vs Completion Time", style = "color: aa66cc;"), plotOutput("distancePlot")),
-                  tabPanel("Video Engagement Analysis", h1("Average Percentage of Video Watched per Piece", style = "color: aa66cc;"), plotOutput("videoEngagementPlot"))
+                  tabPanel("Data", 
+                           h1("Data", style = "color: aa66cc;"),
+                           dataTableOutput("outFile")),
+                  tabPanel("Average Completion Time per Piece", 
+                           h1("Completion Time Analysis", style = "color: aa66cc;"), 
+                           plotlyOutput("completionTimePlot")),
+                  tabPanel("Distance Analysis by Player", 
+                           h1("Distance vs Completion Time", style = "color: aa66cc;"), 
+                           plotlyOutput("distancePlot1")),
+                  tabPanel("Distance Analysis by Piece", 
+                           h1("Distance vs Completion Time", style = "color: aa66cc;"), 
+                           plotlyOutput("distancePlot2")),
+                  tabPanel("Video Engagement Analysis", 
+                           h1("Average Percentage of Video Watched per Piece", style = "color: aa66cc;"), 
+                           plotlyOutput("videoEngagementPlot"))
       )
     )
   )
@@ -77,32 +90,55 @@ server <- function(input, output, session) {
   })
   
   # Plot for Completion Time Analysis
-  output$completionTimePlot <- renderPlot({
+  output$completionTimePlot <- renderPlotly({
     req(inFile())
-    ggplot(inFile(), aes(x = piece, y = completion_time)) +
+    p <- ggplot(inFile(), aes(x = piece, y = completion_time)) +
       geom_bar(stat = "summary", fun = "mean", fill = "#aa66cc") +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
       labs(x = "Piece", y = "Average Completion Time")
+    
+    ggplotly(p)
   })
   
-  # Plot for Distance Analysis
-  output$distancePlot <- renderPlot({
+  # Plot for Distance Analysis by Player
+  output$distancePlot1 <- renderPlotly({
     req(inFile())
-    ggplot(inFile(), aes(x = distance, y = completion_time, color = piece)) +
-      geom_point() +
-      theme_minimal() +
-      labs(x = "Distance", y = "Completion Time")
+    # p <- ggplot(inFile(), aes(x = distance, y = completion_time, color = piece)) +
+    #   geom_point() +
+    #   theme_minimal() +
+    #   labs(x = "Distance", y = "Completion Time")
+    # 
+    # ggplotly(p)
+    
+    plot_ly(data = inFile(), type = "scatter3d", mode = "markers", 
+           x = ~distance, y = ~completion_time, z = ~playerID, color = ~playerID,
+           marker = list(size = 3), text = ~piece)
+      
+    
+  })
+  
+  # Plot for Distance Analysis by Piece
+  output$distancePlot2 <- renderPlotly({
+    req(inFile())
+    
+    plot_ly(data = inFile(), type = "scatter3d", mode = "markers", 
+            x = ~distance, y = ~completion_time, z = ~piece, color = ~piece,
+            marker = list(size = 3), text = ~playerID)
+    
+    
   })
   
   # Plot for Video Engagement Analysis
-  output$videoEngagementPlot <- renderPlot({
+  output$videoEngagementPlot <- renderPlotly({
     req(inFile())
-    ggplot(inFile(), aes(x = piece, y = percentage_video)) +
+    p <- ggplot(inFile(), aes(x = piece, y = percentage_video)) +
       geom_bar(stat = "summary", fun = "mean", fill = "#aa66cc") +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
       labs(x = "Piece", y = "Average Percentage Watched")
+    
+    ggplotly(p)
   })
   
   # Define download link for data description PDF
