@@ -91,6 +91,11 @@ server <- function(input, output, session) {
     }
   })
   
+  # Render the uploaded file in a data table
+  output$outFile <- renderDataTable({
+    data.frame(inFile())
+  })
+  
   # Create a new output for the heatmap and scatter plot
   output$heatmapPlot <- renderPlotly({
     # 2D Heatmap using ggplot2
@@ -126,16 +131,16 @@ server <- function(input, output, session) {
   # Plot for Distance Analysis by Player
   output$distancePlot1 <- renderPlotly({
     req(inFile())
-    # p <- ggplot(inFile(), aes(x = distance, y = completion_time, color = piece)) +
-    #   geom_point() +
-    #   theme_minimal() +
-    #   labs(x = "Distance", y = "Completion Time")
-    # 
-    # ggplotly(p)
+    p <- ggplot(inFile(), aes(x = distance, y = completion_time, color = piece)) +
+      geom_point() +
+      theme_minimal() +
+      labs(x = "Distance", y = "Completion Time")
     
-    plot_ly(data = inFile(), type = "scatter3d", mode = "markers", 
-           x = ~distance, y = ~completion_time, z = ~playerID, color = ~playerID,
-           marker = list(size = 3), text = ~piece)
+    ggplotly(p)
+    
+    # plot_ly(data = inFile(), type = "scatter3d", mode = "markers", 
+    #        x = ~distance, y = ~completion_time, z = ~playerID, color = ~playerID,
+    #        marker = list(size = 3), text = ~piece)
       
     
   })
