@@ -64,7 +64,9 @@ ui <- fluidPage(
                            plotlyOutput("distancePlot2")),
                   tabPanel("Video Engagement Analysis", 
                            h1("Average Percentage of Video Watched per Piece", style = "color: aa66cc;"), 
-                           plotlyOutput("videoEngagementPlot"))
+                           plotlyOutput("videoEngagementPlot")),
+                  tabPanel("Google Form",
+                           htmlOutput("googleFormTab"))
       )
     )
   )
@@ -171,6 +173,12 @@ server <- function(input, output, session) {
       file.copy("vikingshipData.csv", file)
     }
   )
+
+  
+  # Render the Google Form in the "Google Form" tab
+  output$googleFormTab <- renderUI({
+    HTML('<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeUbp57sYcssoH45croShmzwlVomcMjLJ-xJHMAlTpB4cBC5Q/viewform?embedded=true" width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>')
+  })
 }
 
 # Launch the Shiny app
