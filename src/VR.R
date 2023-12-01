@@ -65,7 +65,7 @@ ui <- fluidPage(
                   tabPanel("Video Engagement Analysis", 
                            h1("Average Percentage of Video Watched per Piece", style = "color: aa66cc;"), 
                            plotlyOutput("videoEngagementPlot")),
-                  tabPanel("Google Form",
+                  tabPanel("ARCS Model Based Evaluation",
                            htmlOutput("googleFormTab"))
       )
     )
