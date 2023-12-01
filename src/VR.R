@@ -57,10 +57,10 @@ ui <- fluidPage(
                   tabPanel("Total Completion Time per Piece", 
                            h1("Completion Time Analysis", style = "color: aa66cc;"), 
                            plotlyOutput("completionTimePlot")),
-                  tabPanel("Distance Analysis by Player", 
+                  tabPanel("2D Distance Analysis by Piece", 
                            h1("Distance vs Completion Time", style = "color: aa66cc;"), 
                            plotlyOutput("distancePlot1")),
-                  tabPanel("Distance Analysis by Piece", 
+                  tabPanel("3D Distance Analysis by Piece", 
                            h1("Distance vs Completion Time", style = "color: aa66cc;"), 
                            plotlyOutput("distancePlot2")),
                   tabPanel("Video Engagement Analysis", 
@@ -95,7 +95,7 @@ server <- function(input, output, session) {
   output$outFile <- renderDataTable({
     data.frame(inFile())
   })
-  
+
   # Create a new output for the heatmap and scatter plot
   output$heatmapPlot <- renderPlotly({
     # 2D Heatmap using ggplot2
