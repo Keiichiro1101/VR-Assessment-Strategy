@@ -123,7 +123,7 @@ server <- function(input, output, session) {
       labs(x = "Piece", y = "Total Completion Time")
     
     ggplotly(p)
-  
+    
     
     
   })
@@ -141,7 +141,7 @@ server <- function(input, output, session) {
     # plot_ly(data = inFile(), type = "scatter3d", mode = "markers", 
     #        x = ~distance, y = ~completion_time, z = ~playerID, color = ~playerID,
     #        marker = list(size = 3), text = ~piece)
-      
+    
     
   })
   
@@ -187,7 +187,7 @@ server <- function(input, output, session) {
       file.copy("vikingshipData.csv", file)
     }
   )
-
+  
   
   # Render the Google Form in the "Google Form" tab
   output$googleFormTab <- renderUI({
@@ -197,4 +197,3 @@ server <- function(input, output, session) {
 
 # Launch the Shiny app
 shinyApp(ui, server)
-
