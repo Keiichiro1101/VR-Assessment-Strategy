@@ -92,13 +92,24 @@ server <- function(input, output, session) {
   # Plot for Completion Time Analysis
   output$completionTimePlot <- renderPlotly({
     req(inFile())
-    p <- ggplot(inFile(), aes(x = piece, y = completion_time)) +
-      geom_bar(stat = "summary", fun = "mean", fill = "#aa66cc") +
-      theme_minimal() +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-      labs(x = "Piece", y = "Average Completion Time")
     
-    ggplotly(p)
+    # p <- ggplot(inFile(), aes(x = piece, y = completion_time)) +
+    #   geom_bar(stat = "summary", fun = "mean", fill = "#aa66cc") +
+    #   theme_minimal() +
+    #   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    #   labs(x = "Piece", y = "Average Completion Time")
+    # 
+    # ggplotly(p)
+    
+    currentData <- inFile() %>% select(playerID, piece, completion_time) %>% 
+      group_by(piece)
+    
+    currentData <- mutate(currentData, completionTime = cumsum(completion_time))
+    
+    plot_ly(data = currentData, type = "bar",
+            x = ~piece, y = ~completionTime, color = ~playerID, frame = ~playerID)
+    
+    
   })
   
   # Plot for Distance Analysis by Player
