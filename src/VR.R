@@ -7,6 +7,7 @@ library(reshape2)
 library(dplyr)
 library(plotly)
 library(stringr)
+library(readxl)
 
 # Set Shiny option for maximum request size
 options(shiny.maxRequestSize = 100 * 1024^2)
@@ -65,6 +66,10 @@ ui <- fluidPage(
                   tabPanel("Video Engagement Analysis", 
                            h1("Average Percentage of Video Watched per Piece", style = "color: aa66cc;"), 
                            plotlyOutput("videoEngagementPlot")),
+                  tabPanel("Player Positions Heatmap",
+                           h1("Player Positions Heatmap and 3D Scatter Plot", style = "color: #aa66cc;"),
+                           plotlyOutput("heatmapPlot")
+                  ),
                   tabPanel("ARCS Model Based Evaluation",
                            htmlOutput("googleFormTab"))
       )
@@ -86,9 +91,20 @@ server <- function(input, output, session) {
     }
   })
   
-  # Render the uploaded file in a data table
-  output$outFile <- renderDataTable({
-    data.frame(inFile())
+  # Create a new output for the heatmap and scatter plot
+  output$heatmapPlot <- renderPlotly({
+    # 2D Heatmap using ggplot2
+    heatmap <- ggplot(inFile(), aes(x = X, y = Y, fill = ..density..)) +
+      geom_bin2d(bins = 30) +
+      scale_fill_viridis_c() +
+      labs(title = "2D Heatmap of Player Positions", x = "X Coordinate", y = "Y Coordinate")
+    
+    # # 3D Scatter Plot using plotly
+    # scatter_plot <- plot_ly(inFile(), x = ~X, y = ~Y, z = ~Z, color = ~Timestamp, type = "scatter3d", mode = "markers") %>%
+    #   layout(scene = list(aspectmode = "cube"))
+    # 
+    # # Return both plots in a list
+    # list(heatmap, scatter_plot)
   })
   
   # Plot for Completion Time Analysis
