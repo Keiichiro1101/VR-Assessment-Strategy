@@ -1,6 +1,8 @@
 Visit the application at: https://pps0cw-shreyas-agrawal.shinyapps.io/src-final/
 You will need to upload a dataset according to the specifications. The mock dataset is in the src-final folder of the repo
 
+Walkthrough video here: https://youtu.be/er7cl4t9C6A
+
 ## Installation
 
 Before running the application, make sure you have the required R packages installed. You can do this by running the following commands in R or RStudio:
