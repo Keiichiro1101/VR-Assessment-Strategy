@@ -3,6 +3,8 @@ You will need to upload a dataset according to the specifications. The mock data
 
 Walkthrough video here: https://youtu.be/er7cl4t9C6A
 
+Link to the backlog: https://tasks.office.com/grinco.onmicrosoft.com/en-US/Home/Planner/#/plantaskboard?groupId=fe68ad02-df6e-42dd-b01a-9eef8c14557e&planId=jj5ba_d4tkK56Rc0-YFL1GQAAln9
+
 ## Installation
 
 Before running the application, make sure you have the required R packages installed. You can do this by running the following commands in R or RStudio:
